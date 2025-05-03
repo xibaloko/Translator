@@ -22,38 +22,61 @@ public class CustomerController : ControllerBase
         _customers.AddRange(
         [
             new Customer
+        {
+            Id = 1,
+            Name = "Lucas Militão",
+            Email = "lucas@example.com",
+            Phone = "(11) 91234-5678",
+            Address = new Address
             {
                 Id = 1,
-                Name = "Lucas Militão",
-                Email = "lucas@example.com",
-                Phone = "(11) 91234-5678",
-                Address = "Rua das Palmeiras, 123",
+                Street = "Rua das Palmeiras, 123",
                 City = "São Paulo",
-                State = "SP",
-                Profession = "Software Engineer"
+                State = "SP"
             },
-            new Customer
+            Professions =
+            [
+                new Profession { Id = 1, Name = "Software Engineer" },
+                new Profession { Id = 2, Name = "Developer" }
+            ]
+        },
+        new Customer
+        {
+            Id = 2,
+            Name = "Giovanna Silva",
+            Email = "giovanna@example.com",
+            Phone = "(21) 99876-5432",
+            Address = new Address
             {
                 Id = 2,
-                Name = "Giovanna Silva",
-                Email = "giovanna@example.com",
-                Phone = "(21) 99876-5432",
-                Address = "Avenida Brasil, 456",
+                Street = "Avenida Brasil, 456",
                 City = "Rio de Janeiro",
-                State = "RJ",
-                Profession = "Graphic Designer"
+                State = "RJ"
             },
-            new Customer
+            Professions =
+            [
+                new Profession { Id = 2, Name = "Graphic Designer" }
+            ]
+        },
+        new Customer
+        {
+            Id = 3,
+            Name = "Carlos Souza",
+            Email = "carlos@example.com",
+            Phone = "(31) 98877-1122",
+            Address = new Address
             {
                 Id = 3,
-                Name = "Carlos Souza",
-                Email = "carlos@example.com",
-                Phone = "(31) 98877-1122",
-                Address = "Praça Central, 789",
+                Street = "Praça Central, 789",
                 City = "Belo Horizonte",
-                State = "MG",
-                Profession = "Project Manager"
-            }
+                State = "MG"
+            },
+            Professions =
+            [
+                new Profession { Id = 3, Name = "Project Manager" }
+            ]
+        }
         ]);
     }
+
 }
