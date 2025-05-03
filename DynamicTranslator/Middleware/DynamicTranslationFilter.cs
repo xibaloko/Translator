@@ -17,6 +17,7 @@ public class GenericTranslationFilter : IAsyncResultFilter
     private readonly ILogger<GenericTranslationFilter> _logger;
     private readonly IStringLocalizerFactory _localizerFactory;
     private readonly Type _resourceType;
+    private readonly HashSet<object> _visited = new HashSet<object>();
 
     public GenericTranslationFilter(
         ILogger<GenericTranslationFilter> logger,
@@ -34,8 +35,7 @@ public class GenericTranslationFilter : IAsyncResultFilter
 
         if (string.IsNullOrWhiteSpace(language))
         {
-            _logger.LogWarning("No culture specified");
-
+            _logger.LogWarning("No culture specified in Accept-Language header.");
             await next();
             return;
         }
@@ -45,10 +45,9 @@ public class GenericTranslationFilter : IAsyncResultFilter
             CultureInfo.CurrentCulture = new CultureInfo(language);
             CultureInfo.CurrentUICulture = new CultureInfo(language);
         }
-        catch
+        catch (Exception ex)
         {
-            _logger.LogError("Invalid culture specified in Accept-Language header: {Language}", language);
-
+            _logger.LogError(ex, "Invalid culture specified in Accept-Language header: {Language}", language);
             await next();
             return;
         }
@@ -57,8 +56,15 @@ public class GenericTranslationFilter : IAsyncResultFilter
         {
             var localizer = _localizerFactory.Create(_resourceType.FullName, _resourceType.Assembly.GetName().Name);
 
-            var translated = TranslateObject(result.Value, localizer);
-            result.Value = translated;
+            try
+            {
+                var translated = TranslateObject(result.Value, localizer);
+                result.Value = translated;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to translate response object.");
+            }
         }
 
         await next();
@@ -66,7 +72,18 @@ public class GenericTranslationFilter : IAsyncResultFilter
 
     private object TranslateObject(object instance, IStringLocalizer localizer)
     {
+        if (_visited.Contains(instance))
+            return instance;
+
+        _visited.Add(instance);
+
         var type = instance.GetType();
+
+        if (IsDictionaryType(type))
+        {
+            _logger.LogWarning("Translation of dictionaries is not supported: {Type}", type.FullName);
+            return instance;
+        }
 
         if (IsCollectionType(type))
         {
@@ -83,36 +100,32 @@ public class GenericTranslationFilter : IAsyncResultFilter
             return list;
         }
 
-        if (type.GetCustomAttribute<TranslateAllAttribute>() != null)
-            return TranslateAll(instance, localizer);
-        else if (type.GetCustomAttribute<TranslateKeysAttribute>() != null)
-            return TranslateKeys(instance, localizer);
-        else
-            return TranslateValues(instance, localizer);
-    }
-
-    private static object TranslateAll(object instance, IStringLocalizer localizer)
-    {
-        throw new NotImplementedException();
-    }
-
-    private static object TranslateKeys(object instance, IStringLocalizer localizer)
-    {
-        throw new NotImplementedException();
+        return TranslateValues(instance, localizer);
     }
 
     private object TranslateValues(object instance, IStringLocalizer localizer)
     {
         var type = instance.GetType();
 
-        var copy = Activator.CreateInstance(type);
+        var ctor = type.GetConstructor(Type.EmptyTypes);
+
+        if (ctor == null)
+        {
+            _logger.LogWarning("No parameterless constructor for type {Type}, skipping translation.", type.FullName);
+            return instance;
+        }
+
+        var copy = ctor.Invoke(null);
 
         foreach (var prop in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
         {
-            if (prop.GetCustomAttribute<IgnoreTranslationAttribute>() != null || type.GetCustomAttribute<DisableTranslatorAttribute>() != null)
+            if (!prop.CanWrite || prop.SetMethod?.IsPublic != true)
+                continue;
+
+            if (prop.GetCustomAttribute<IgnoreTranslationAttribute>() != null ||
+                type.GetCustomAttribute<DisableTranslatorAttribute>() != null)
             {
                 prop.SetValue(copy, prop.GetValue(instance));
-
                 continue;
             }
 
@@ -137,10 +150,7 @@ public class GenericTranslationFilter : IAsyncResultFilter
         return copy;
     }
 
-    private static bool IsCollectionType(Type type)
-    {
-        if (type == typeof(string)) return false;
+    private static bool IsCollectionType(Type type) => typeof(IEnumerable).IsAssignableFrom(type) && type != typeof(string);
 
-        return typeof(IEnumerable).IsAssignableFrom(type);
-    }
+    private static bool IsDictionaryType(Type type) => typeof(IDictionary).IsAssignableFrom(type);
 }
