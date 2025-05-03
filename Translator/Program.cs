@@ -28,8 +28,6 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
-//app.UseDynamicTranslator<Resources>();
-
 app.MapControllers();
 
 app.Run();

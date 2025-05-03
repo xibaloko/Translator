@@ -1,24 +1,30 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="ResourceFiles\**" />
-    <EmbeddedResource Remove="ResourceFiles\**" />
-    <None Remove="ResourceFiles\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.3.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.4" />
-    <PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.4" />
-    <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="9.0.4" />
-    <PackageReference Include="System.Text.Json" Version="9.0.4" />
-  </ItemGroup>
-
+	<PropertyGroup>
+		<TargetFramework>netstandard2.1</TargetFramework>
+		<Nullable>enable</Nullable>
+		<LangVersion>latest</LangVersion>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageId>DynamicTranslator</PackageId>
+		<Version>1.0.0</Version>
+		<Authors>Ulisses Inacio</Authors>
+		<Company>inac_uli</Company>
+		<Description>Dynamic translation filter for ASP.NET Core APIs using attributes and IStringLocalizer.</Description>
+		<PackageTags>localization translation aspnetcore middleware</PackageTags>
+		<RepositoryUrl>https://github.com/xibaloko/Translator.git</RepositoryUrl>
+	</PropertyGroup>
+	<ItemGroup>
+		<Compile Remove="ResourceFiles\**" />
+		<EmbeddedResource Remove="ResourceFiles\**" />
+		<None Remove="ResourceFiles\**" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.3.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.4" />
+		<PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.4" />
+		<PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="9.0.4" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.4" />
+		<PackageReference Include="Microsoft.Extensions.Options" Version="9.0.4" />
+		<PackageReference Include="System.Text.Json" Version="9.0.4" />
+	</ItemGroup>
 </Project>
