@@ -117,13 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Name" xml:space="preserve">
-    <value>Nome</value>
+  <data name="Avenue" xml:space="preserve">
+    <value>Avenida</value>
   </data>
-  <data name="Profession" xml:space="preserve">
-    <value>Profissão</value>
+  <data name="Developer" xml:space="preserve">
+    <value>Desenvolvedor</value>
+  </data>
+  <data name="Highway" xml:space="preserve">
+    <value>Rodovia</value>
+  </data>
+  <data name="Project Manager" xml:space="preserve">
+    <value>Gerente de Projetos</value>
   </data>
   <data name="Software Engineer" xml:space="preserve">
     <value>Engenheiro de Software</value>
+  </data>
+  <data name="Square" xml:space="preserve">
+    <value>Praça</value>
+  </data>
+  <data name="Street" xml:space="preserve">
+    <value>Rua</value>
   </data>
 </root>
