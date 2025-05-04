@@ -56,23 +56,18 @@ Each `.resx` file should follow the [ResourceManager naming convention](https://
 
 Use the following attributes in your response models:
 
-- `[TranslateAll]` → Translates all string properties
-- `[TranslateKeys("key1", "key2")]` → Translates only specific properties
 - `[IgnoreTranslation]` → Skips a specific property
 - `[DisableTranslator]` → Skips the entire object
 
 Example:
 
 ```csharp
-[TranslateAll]
-public class CustomerResponse
+public class ProductResponse
 {
+    [IgnoreTranslation]
     public string Name { get; set; }
 
-    [IgnoreTranslation]
-    public string Email { get; set; }
-
-    public AddressResponse Address { get; set; }
+    public string Type { get; set; }
 }
 ```
 
@@ -85,33 +80,29 @@ Translation will automatically be applied based on the `Accept-Language` header 
 Example:
 
 ```http
-GET /api/customer
-Accept-Language: es
+GET /api/products
+Accept-Language: pt-BR
 ```
 
 ---
 
 ## ✅ Example response before/after
 
-**Input (`pt-BR`):**
+**Input (`en-US`):**
 
 ```json
 {
-  "name": "Lucas Militão",
-  "address": {
-    "city": "São Paulo"
-  }
+  "name": "Tesla Model Y",
+  "type": "Electric Vehicle"
 }
 ```
 
-**Translated (`Accept-Language: en`):**
+**Translated (`Accept-Language: pt-BR`):**
 
 ```json
 {
-  "name": "Lucas Militão",
-  "address": {
-    "city": "São Paulo" // Assuming not found in .resx, fallback to original
-  }
+  "name": "Tesla Model Y",
+  "type": "Veículo Elétrico"
 }
 ```
 
